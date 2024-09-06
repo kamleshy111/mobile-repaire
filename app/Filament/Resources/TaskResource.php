@@ -12,6 +12,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Models\Product;
 
 class TaskResource extends Resource
 {
@@ -36,8 +37,11 @@ class TaskResource extends Resource
                                         ->required(),
                 Forms\Components\DateTimePicker::make('start_time')->label('Start Time')->native(false)->withoutSeconds()->required(),
                 Forms\Components\DateTimePicker::make('end_time')->label('End time')->native(false)->withoutSeconds()->required(),
-                Forms\Components\TextInput::make('amount')->label('Amount')->required(),
-                Forms\Components\Textarea::make('task_description')->label('Task Description')->required(),
+                Forms\Components\Select::make('product_id')
+                                        ->relationship('product', 'part_type') // Assuming the 'name' field is used to display products
+                                        ->label('Select Item'),
+                Forms\Components\TextInput::make('quantity')->numeric()->required(),
+                Forms\Components\Textarea::make('task_description')->label('Issue Description')->required(),
                 Forms\Components\Select::make('status')
                         ->options([
                             'Pending' => 'Pending',
@@ -60,7 +64,8 @@ class TaskResource extends Resource
                                             ->label('End Time')
                                             ->dateTime('d.m.Y H:i')->searchable(),
                 Tables\Columns\TextColumn::make('status')->sortable()->searchable(),
-                Tables\Columns\TextColumn::make('amount')->label('Amount')->sortable()->searchable(),
+                Tables\Columns\TextColumn::make('item')->sortable()->searchable(),
+                Tables\Columns\TextColumn::make('quantity')->searchable(),
             ])
             ->filters([
                 //

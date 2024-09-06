@@ -47,11 +47,6 @@ class User extends Authenticatable
         ];
     }
 
-    public function repair()
-    {
-        return $this->hasMany(Repair::class);
-    }
-
     public function task()
     {
         return $this->hasMany(Task::class);

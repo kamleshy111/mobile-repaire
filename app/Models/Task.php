@@ -9,7 +9,7 @@ class Task extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['repair_id','user_id','amount','task_description','status','start_time','end_time'];
+    protected $fillable = ['product_id','repair_id','user_id','quantity','amount','task_description','status','start_time','end_time'];
 
     public function user()
     {
@@ -19,5 +19,10 @@ class Task extends Model
     public function repair()
     {
         return $this->belongsTo(Repair::class);
+    }
+
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
     }
 }
