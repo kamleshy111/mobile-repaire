@@ -10,6 +10,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Models\Product;
 
 class TasksRelationManager extends RelationManager
 {
@@ -19,7 +20,8 @@ class TasksRelationManager extends RelationManager
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('repair_id')->relationship('repair', 'customer_name')->label('Customer Name')->required(),
+                Forms\Components\Hidden::make('repair_id')
+                                        ->default(fn (RelationManager $livewire) => $livewire->ownerRecord->id),
                 Forms\Components\Select::make('user_id')
                                         ->options(function () {
                                             // Query to fetch only users with the role 'Operator'
@@ -31,14 +33,17 @@ class TasksRelationManager extends RelationManager
                                         ->required(),
                 Forms\Components\DateTimePicker::make('start_time')->label('Start Time')->native(false)->withoutSeconds()->required(),
                 Forms\Components\DateTimePicker::make('end_time')->label('End time')->native(false)->withoutSeconds()->required(),
-                Forms\Components\TextInput::make('amount')->label('Amount')->required(),
-                Forms\Components\Textarea::make('task_description')->label('Task Description')->required(),
+                Forms\Components\Select::make('product_id')
+                                            ->relationship('product', 'part_type') // Assuming the 'name' field is used to display products
+                                            ->label('Select Item'),
+                Forms\Components\TextInput::make('quantity')->numeric()->required(),
                 Forms\Components\Select::make('status')
                         ->options([
                             'Pending' => 'Pending',
                             'In Progress' => 'In Progress',
                             'Completed' => 'Completed',
                 ])->required(),
+                Forms\Components\Textarea::make('task_description')->label('Issue Description')->required(),
             ]);
     }
 
@@ -49,14 +54,12 @@ class TasksRelationManager extends RelationManager
         ->columns([
             Tables\Columns\TextColumn::make('user.name')->label('Operator')->sortable()->searchable(),
             Tables\Columns\TextColumn::make('repair.customer_name')->label('Customer Name')->sortable()->searchable(),
-            Tables\Columns\TextColumn::make('start_time')
-                                        ->label('Start Time')
-                                        ->dateTime('d.m.Y H:i')->searchable(),
-            Tables\Columns\TextColumn::make('end_time')
-                                        ->label('End Time')
-                                        ->dateTime('d.m.Y H:i')->searchable(),
-            Tables\Columns\TextColumn::make('status')->sortable()->searchable(),
-            Tables\Columns\TextColumn::make('amount')->label('Amount')->sortable()->searchable(),
+            Tables\Columns\TextColumn::make('product.name')->label('Product name')->sortable()->searchable(),
+            Tables\Columns\TextColumn::make('product.model')->label('Model')->sortable()->searchable(),
+            Tables\Columns\TextColumn::make('product.part_type')->label('Part name')->sortable()->searchable(),
+            Tables\Columns\TextColumn::make('quantity')->searchable(),
+            Tables\Columns\TextColumn::make('repair.issue')->label('Issue')->sortable()->searchable(),
+
         ])
         ->filters([
             //

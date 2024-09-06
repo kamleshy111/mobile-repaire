@@ -30,11 +30,18 @@ class UserResource extends Resource
         return $form
             ->schema([
                 TextInput::make('name')->required()->maxLength(255),
-                TextInput::make('email')->unique()->required(),
-                 TextInput::make('password')
-                        ->password()
-                        ->required()
-                        ->dehydrateStateUsing(fn ($state) => \Hash::make($state)),
+                TextInput::make('email')
+                            ->required()
+                            ->email()
+                            ->rules([
+                                'unique:users,email,' . ($form->model?->id ?? 'NULL') . ',id', // This ensures the email is only unique for new users
+                            ]),
+                TextInput::make('password')
+                            ->password()
+                            ->dehydrateStateUsing(fn($state) => filled($state) ? bcrypt($state) : null) // Hash the password if provided
+                            ->required(fn($livewire) => $livewire instanceof CreateRecord) // Required only during creation
+                            ->nullable()
+                            ->dehydrated(fn($state) => filled($state)),
                 Select::make('role')
                         ->options([
                             'Operator' => 'Operator',
