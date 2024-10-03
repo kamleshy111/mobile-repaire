@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Filament\Resources\RepairResource\Pages;
+namespace App\Filament\Resources\CustomerHistoryResource\Pages;
 
-use App\Filament\Resources\RepairResource;
+use App\Filament\Resources\CustomerHistoryResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Resources\Components\Tab;
-use App\Models\Repair;
+use App\Models\CustomerHistory;
 
-class ListRepairs extends ListRecords
+class ListCustomerHistories extends ListRecords
 {
-    protected static string $resource = RepairResource::class;
+    protected static string $resource = CustomerHistoryResource::class;
 
     protected function getHeaderActions(): array
     {
@@ -24,16 +24,16 @@ class ListRepairs extends ListRecords
     {
         return [
             'all' => Tab::make()
-            ->badge(Repair::query()->count()),
+            ->badge(CustomerHistory::query()->count()),
             'This week' =>  Tab::make()
             ->modifyQueryUsing(fn (Builder $query) => $query->where('created_at', '>=', now()->subWeek()))
-            ->badge(Repair::query()->where('created_at', '>=', now()->subWeek())->count()),
+            ->badge(CustomerHistory::query()->where('created_at', '>=', now()->subWeek())->count()),
             'This Month' =>  Tab::make()
             ->modifyQueryUsing(fn (Builder $query) => $query->where('created_at', '>=', now()->subMonth()))
-            ->badge(Repair::query()->where('created_at', '>=', now()->subMonth())->count()),
+            ->badge(CustomerHistory::query()->where('created_at', '>=', now()->subMonth())->count()),
             'This Year' =>  Tab::make()
             ->modifyQueryUsing(fn (Builder $query) => $query->where('created_at', '>=', now()->subYear()))
-            ->badge(Repair::query()->where('created_at', '>=', now()->subYear())->count()),
+            ->badge(CustomerHistory::query()->where('created_at', '>=', now()->subYear())->count()),
         ];
 
     }

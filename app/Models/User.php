@@ -21,6 +21,7 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'contact',
         'status',
     ];
 
@@ -47,9 +48,14 @@ class User extends Authenticatable
         ];
     }
 
-    public function task()
+    public function repair()
     {
-        return $this->hasMany(Task::class);
+        return $this->hasMany(Repair::class);
+    }
+
+    public function customerHistory()
+    {
+        return $this->hasMany(CustomerHistory::class);
     }
 
 }
