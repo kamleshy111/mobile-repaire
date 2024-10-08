@@ -25,6 +25,7 @@ use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\Action;
+use Filament\Forms\Components\Section;
 
 
 
@@ -38,33 +39,59 @@ class RepairResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('customer_name')->label('Customer Name')->required(),
-                Forms\Components\TextInput::make('customer_contact')->label('Customer Contact')->numeric()->required(),
-                Forms\Components\Select::make('user_id')
-                                        ->options(function () {
-                                            // Query to fetch only users with the role 'Operator'
-                                            return \App\Models\User::where('role', 'enginer')
-                                                                    ->where('status', 'active')
-                                                                    ->pluck('name', 'id');
-                                        })
-                                        ->label('Assigned Enginery')
-                                        ->required(),
-                Forms\Components\Select::make('brand_id')->relationship('brand', 'name')->label('Device Brand')->required(),
-                Forms\Components\TextInput::make('device_model')->label('Device Model')->required(),
-                Forms\Components\TextInput::make('patern_lock')->label('Patern Lock')->numeric()->required(),
-                Forms\Components\TextInput::make('estimated_cost')->label('Estimated Cost')->numeric()->required(),
-                Forms\Components\TextInput::make('received_amount')->label('Received Amount')->numeric(),
-                Forms\Components\DateTimePicker::make('date_time')->label('Start Time')->native(false)->withoutSeconds()->required(),
-                Forms\Components\DateTimePicker::make('deliver_date')->label('Deliver Date')->native(false)->withoutSeconds()->required(),
-                Forms\Components\TextInput::make('issue')->label('issue')->required(),
-                Forms\Components\Select::make('status')
-                        ->options([
-                            'pending' => 'Pending',
-                            'in_progress' => 'In Progress',
-                            'Completed' => 'Completed',
-                            'Cancelled' => 'Cancelled',
-                ])->required(),
-                Forms\Components\Textarea::make('issue_description')->label('Issue Description')->columnSpan('full')->required(),
+                Forms\Components\TextInput::make('customer_id')
+                ->label('Customer ID')
+                ->readOnly()
+                ->default(fn() => 'B-' . time() . rand(10, 99)),
+                Section::make('Customer Information')
+                    ->schema([
+                        Forms\Components\Grid::make()->columns(2)->schema([
+                        Forms\Components\TextInput::make('customer_name')->label('Customer Name')->required(),
+                        Forms\Components\TextInput::make('customer_contact')->label('Customer Contact')->numeric()->required(),
+                    ]),
+                ]),
+
+                Section::make('Device Information')
+                    ->schema([
+                        Forms\Components\Grid::make()->columns(2)->schema([
+                            Forms\Components\Select::make('brand_id')->relationship('brand', 'name')->label('Device Brand')->required(),
+                            Forms\Components\TextInput::make('device_model')->label('Device Model')->required(),
+                            Forms\Components\TextInput::make('patern_lock')->label('Patern Lock')->numeric()->required(),
+                        ]),
+                ]),
+
+                Section::make('Financial Information')
+                ->schema([
+                    Forms\Components\Grid::make()->columns(2)->schema([
+                        Forms\Components\TextInput::make('estimated_cost')->label('Estimated Cost')->numeric()->required(),
+                        Forms\Components\TextInput::make('received_amount')->label('Received Amount')->numeric(),
+                        Forms\Components\DateTimePicker::make('date_time')->label('Start Time')->native(false)->withoutSeconds()->required(),
+                        Forms\Components\DateTimePicker::make('deliver_date')->label('Deliver Date')->native(false)->withoutSeconds()->required(),
+                    ]),
+                ]),
+                Section::make('Engineers Assigned')
+                ->schema([
+                    Forms\Components\Grid::make()->columns(2)->schema([
+                        Forms\Components\Select::make('user_id')
+                            ->options(function () {
+                                // Query to fetch only users with the role 'Engineer'
+                                return User::where('role', 'enginer') // Corrected spelling from 'enginer' to 'engineer'
+                                    ->where('status', 'active')
+                                    ->pluck('name', 'id');
+                            })
+                            ->label('Engineer Name')
+                            ->required(),
+                        Forms\Components\Select::make('status')
+                                    ->options([
+                                        'pending' => 'Pending',
+                                        'in_progress' => 'In Progress',
+                                        'Completed' => 'Completed',
+                                        'Cancelled' => 'Cancelled',
+                            ])->required(),
+                        Forms\Components\TextInput::make('issue')->label('issue')->required(),
+                        Forms\Components\Textarea::make('issue_description')->label('Issue Description')->required(),
+                    ]),
+                ])
             ]);
     }
 
@@ -72,6 +99,7 @@ class RepairResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('customer_id')->label('Customer ID')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('customer_name')->label('Customer Name')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('user.name')->label('Enginery Name')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('brand.name')->label('Device Brand')->sortable()->searchable(),
@@ -173,7 +201,7 @@ class RepairResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\RepairHistoryRelationManager::class, 
         ];
     }
 

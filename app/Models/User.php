@@ -23,7 +23,22 @@ class User extends Authenticatable
         'role',
         'contact',
         'status',
+        'engineer_id',
     ];
+
+    protected static function booted()
+    {
+
+        static::creating(function ($customer) {
+            do {
+                $engineer_id = 'B-' . time() . rand(10, 99); // Example format
+            } while (self::where('engineer_id', $engineer_id)->exists());
+    
+            $customer->engineer_id = $engineer_id;
+        });
+
+
+    }
 
     /**
      * The attributes that should be hidden for serialization.

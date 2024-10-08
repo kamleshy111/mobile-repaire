@@ -40,6 +40,10 @@ class UserResource extends Resource
     {
         return $form
             ->schema([
+                TextInput::make('engineer_id')
+                ->label('Engineer ID')
+                ->readOnly() // Use read-only instead of disabled
+                ->default(fn() => 'B-' . time() . rand(10, 99)),
                 TextInput::make('name')->required()->maxLength(255),
                 TextInput::make('contact')->numeric()->required(),
                 TextInput::make('email')
@@ -67,6 +71,7 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
+                TextColumn::make('engineer_id')->label('Engineer ID')->sortable()->searchable(),
                 TextColumn::make('name')->sortable()->searchable(),
                 TextColumn::make('email')->sortable()->searchable(),
                 TextColumn::make('contact')->sortable()->searchable(),

@@ -9,7 +9,7 @@ class Repair extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id','brand_id','device_model','issue','issue_description','customer_name','customer_contact',
+    protected $fillable = ['customer_id','user_id','brand_id','device_model','issue','issue_description','customer_name','customer_contact',
     'estimated_cost', 'patern_lock', 'date_time', 'deliver_date', 'received_amount', 'final_cost', 'status' ];
 
     protected static function booted()
@@ -22,6 +22,14 @@ class Repair extends Model
                 $customeHistory->issue = $repair->issue;
                 $customeHistory->save();
 
+        });
+
+        static::creating(function ($customer) {
+            do {
+                $customer_id = 'B-' . time() . rand(10, 99); // Example format
+            } while (self::where('customer_id', $customer_id)->exists());
+    
+            $customer->customer_id = $customer_id;
         });
 
         static::updating(function ($repair) {

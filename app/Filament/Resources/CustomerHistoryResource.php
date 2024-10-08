@@ -22,7 +22,17 @@ class CustomerHistoryResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    protected static ?string $navigationGroup = 'Customer History';
+    protected static ?string $navigationGroup = 'Repairs History';
+
+    public static function getPluralModelLabel(): string
+    {
+        return 'Repairs';
+    }
+
+    public static function getModelLabel(): string
+    {
+        return 'Repair';
+    }
 
     public static function form(Form $form): Form
     {
