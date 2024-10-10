@@ -9,10 +9,15 @@ class Product extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name','model','part_type','price','stock_quantity','description'];
+    protected $fillable = ['brand_id','model','description','part_details'];
 
-    public function task()
+    protected $casts = [
+        'part_details' => 'array',
+    ];
+    
+
+    public function brand()
     {
-        return $this->hasMany(Task::class);
+        return $this->belongsTo(Brand::class);
     }
 }

@@ -11,15 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tasks', function (Blueprint $table) {
+        Schema::create('customer_histories', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('repair_id')->defolut(0);
             $table->unsignedBigInteger('user_id')->defolut(0);
-            $table->text('task_description')->nullable();
-            $table->decimal('amount', 10, 2)->nullable();
-            $table->enum('status', ['Pending', 'In Progress', 'Completed'])->default('Pending'); 
-            $table->timestamp('start_time')->nullable();
-            $table->timestamp('end_time')->nullable();
+            $table->text('issue')->nullable();
             $table->timestamps();
 
             $table->foreign('repair_id')->references('id')->on('repairs')->onDelete('cascade');
@@ -32,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tasks');
+        Schema::dropIfExists('customer_histories');
     }
 };

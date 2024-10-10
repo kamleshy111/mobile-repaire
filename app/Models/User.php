@@ -21,8 +21,24 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'contact',
         'status',
+        'engineer_id',
     ];
+
+    protected static function booted()
+    {
+
+        static::creating(function ($customer) {
+            do {
+                $engineer_id = 'B-' . time() . rand(10, 99); // Example format
+            } while (self::where('engineer_id', $engineer_id)->exists());
+    
+            $customer->engineer_id = $engineer_id;
+        });
+
+
+    }
 
     /**
      * The attributes that should be hidden for serialization.
@@ -47,9 +63,14 @@ class User extends Authenticatable
         ];
     }
 
-    public function task()
+    public function repair()
     {
-        return $this->hasMany(Task::class);
+        return $this->hasMany(Repair::class);
+    }
+
+    public function customerHistory()
+    {
+        return $this->hasMany(CustomerHistory::class);
     }
 
 }

@@ -19,15 +19,32 @@ class ProductResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    public static function getPluralModelLabel(): string
+    {
+        return 'Parts';
+    }
+
+    public static function getModelLabel(): string
+    {
+        return 'Part';
+    }
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')->label('Brand Name')->required(),
+                Forms\Components\Select::make('brand_id')->relationship('brand', 'name')->label('Brand Name')->required(),
                 Forms\Components\TextInput::make('model')->label('Model Name')->required(),
-                Forms\Components\TextInput::make('part_type')->label('Part Type')->required(),
-                Forms\Components\TextInput::make('stock_quantity')->label('stock Quantity')->numeric()->required(),
-                Forms\Components\TextInput::make('price')->numeric(),
+                Forms\Components\Repeater::make('part_details')
+                                        ->schema([
+                                            Forms\Components\TextInput::make('part_type')
+                                                            ->label('Parts Name'),
+                                            Forms\Components\TextInput::make('stock_quantity')
+                                                            ->label('stock Quantity')->numeric(),
+                                            Forms\Components\TextInput::make('price')->numeric(),
+                                        ])
+                ->label(__('Part Details'))
+                ->createItemButtonLabel(__('Add Part'))->columns(3)->columnSpan('full')
             ]);
     }
 
@@ -35,11 +52,8 @@ class ProductResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')->sortable()->searchable(),
+                Tables\Columns\TextColumn::make('brand.name')->label('Brand Name')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('model')->sortable()->searchable(),
-                Tables\Columns\TextColumn::make('part_type')->label('Part Type')->sortable()->searchable(),
-                Tables\Columns\TextColumn::make('stock_quantity')->label('stock Quantity')->sortable()->searchable(),
-                Tables\Columns\TextColumn::make('price')->sortable()->searchable(),
 
             ])
             ->filters([

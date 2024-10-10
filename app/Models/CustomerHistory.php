@@ -5,11 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Task extends Model
+class CustomerHistory extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['product_id','repair_id','user_id','quantity','amount','task_description','status','start_time','end_time'];
+    protected $fillable = ['user_id', 'repair_id', 'issue'];
 
     public function user()
     {
@@ -19,10 +19,5 @@ class Task extends Model
     public function repair()
     {
         return $this->belongsTo(Repair::class);
-    }
-
-    public function product()
-    {
-        return $this->belongsTo(Product::class);
     }
 }

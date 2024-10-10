@@ -13,17 +13,24 @@ return new class extends Migration
     {
         Schema::create('repairs', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('brand_id')->defolut(0);
+            $table->unsignedBigInteger('user_id')->defolut(0);
             $table->string('customer_name')->nullable();
             $table->string('customer_contact')->nullable();
-            $table->string('device_brand')->nullable();
             $table->string('device_model')->nullable();
             $table->string('issue')->nullable();
             $table->text('issue_description')->nullable();
             $table->decimal('estimated_cost', 10, 2)->nullable();
             $table->decimal('final_cost', 10, 2)->nullable();
-            $table->enum('status', ['Pending', 'In Progress', 'Completed', 'Cancelled'])->default('Pending');
+            $table->string('patern_lock')->nullable();
+            $table->timestamp('date_time')->nullable();
+            $table->timestamp('deliver_date')->nullable();
+            $table->decimal('received_amount', 8, 2);
+            $table->enum('status', ['pending', 'in_progress', 'completed', 'cancelled'])->default('pending');
             $table->timestamps();
 
+            $table->foreign('brand_id')->references('id')->on('brands')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
