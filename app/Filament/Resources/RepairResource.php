@@ -56,7 +56,7 @@ class RepairResource extends Resource
                         Forms\Components\Grid::make()->columns(2)->schema([
                             Forms\Components\Select::make('brand_id')->relationship('brand', 'name')->label('Device Brand')->required(),
                             Forms\Components\TextInput::make('device_model')->label('Device Model')->required(),
-                            Forms\Components\TextInput::make('patern_lock')->label('Patern Lock')->numeric()->required(),
+                            Forms\Components\TextInput::make('patern_lock')->label('Patern Lock')->numeric(),
                         ]),
                 ]),
 
