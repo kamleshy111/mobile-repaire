@@ -167,33 +167,29 @@ class RepairResource extends Resource
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\DeleteAction::make(),
                 ]),
+                // Tables\Actions\Action::make('download_pdf')
+                //                         ->icon('heroicon-o-document') // Example icon
+                //                         ->action(function ($record) {
+                //                             $repairs = collect([$record]);
+                //                             $pdf = Pdf::loadView('pdf.repairs', ['repairs' => $repairs]);
+                //                             return Response::streamDownload(fn () => print($pdf->output()), 'repair-' . $record->id . '.pdf');
+                //                         }),
                 Tables\Actions\Action::make('download_pdf')
-                                        ->icon('heroicon-o-document') // Example icon
-                                        ->action(function ($record) {
-                                            $repairs = collect([$record]);
-                                            $pdf = Pdf::loadView('pdf.repairs', ['repairs' => $repairs]);
-                                            return Response::streamDownload(fn () => print($pdf->output()), 'repair-' . $record->id . '.pdf');
-                                        }),
+                                    ->icon('heroicon-o-document')
+                                    ->action(function ($record) {
+                                        // Directly pass the single record to the view without a collection
+                                        $pdf = Pdf::loadView('pdf.repairs', ['repair' => $record]);
+
+                                        return Response::streamDownload(
+                                            fn () => print($pdf->output()), 
+                                            'repair-' . $record->id . '.pdf'
+                                        );
+                                    })
+                                    ->label('Download PDF'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                    Tables\Actions\BulkAction::make('download_pdf')
-                    ->label('Download PDF')
-                    ->action(function ($records) {
-                        // Convert the collection to an array of IDs
-                        $recordIds = $records->pluck('id')->toArray();
-                        
-                        // Fetch the repairs using the array of IDs
-                        $repairs = Repair::whereIn('id', $recordIds)->get();
-                        
-                        // Generate the PDF with the repairs data
-                        $pdf = Pdf::loadView('pdf.repairs', ['repairs' => $repairs]);
-                
-                        // Stream the PDF download
-                        return Response::streamDownload(fn () => print($pdf->output()), 'repairs.pdf');
-                    }),
-                
+                    Tables\Actions\DeleteBulkAction::make()
                 ]),
             ]);
     }
