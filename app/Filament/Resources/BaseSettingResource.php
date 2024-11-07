@@ -26,16 +26,15 @@ class BaseSettingResource extends Resource
         return $form
             ->schema([
                 Forms\Components\FileUpload::make('favicon_icon')
-                                ->label(__('translations.favicon_icon'))
+                                ->label('Favicon Icon')
                                 ->image()
                                 ->directory('uploads/favicon_icon')
                                 ->visibility('public'),
                 Forms\Components\FileUpload::make('logo')
-                                ->label(__('translations.logo'))
                                 ->image()
                                 ->directory('uploads/logo')
                                 ->visibility('public'),
-                Forms\Components\TextInput::make('title')->label(__('translations.title'))->required(),
+                Forms\Components\TextInput::make('title')->required(),
                             ]);
     }
 
@@ -43,9 +42,9 @@ class BaseSettingResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\ImageColumn::make('favicon_icon')->label(__('translations.favicon_icon')),
-                Tables\Columns\ImageColumn::make('logo')->label(__('translations.logo')),
-                Tables\Columns\TextColumn::make('title')->label(__('translations.title'))->sortable()->searchable()
+                Tables\Columns\ImageColumn::make('favicon_icon')->label(('Favicon Icon')),
+                Tables\Columns\ImageColumn::make('logo'),
+                Tables\Columns\TextColumn::make('title')->sortable()->searchable()
             ])
             ->filters([
                 //
