@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mobile Store Invoice</title>
+    <title>BMY Mobile Store</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -58,9 +58,9 @@
 
 <div class="invoice-box">
     <div class="header">
-        <h1>Mobile Store</h1>
-        <p>Address: mansrover vijay path 123cd new sangane rode | City:jaipur | State:Rajasthan | Zip Code:303032 
-        <p>Email: store@example.com | Phone: (123) 456-7890</p>
+        <h1>BMY Store</h1>
+        <p>Address: Shop No 4/41 Kiran Path Madhyam Marg, Mansarovar Sector 4, near Kiran Path, Chauraha | City:jaipur | State:Rajasthan | Zip Code:302020 
+        <p>Email: BMY@gmail.com | Phone: 080585 82021</p>
     </div>
 
     <hr>
